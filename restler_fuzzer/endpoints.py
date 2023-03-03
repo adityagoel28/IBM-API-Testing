@@ -25,3 +25,4 @@ all_endpoints = [{'GET': '/info.0.json'}, {'GET': '/{comicId}/info.0.json'}]
 
 
 # language_tool
+all_endpoints = [{'POST': '/check'}, {'GET': '/languages'}, {'GET': '/words'}, {'POST': '/words/add'}, {'POST': '/words/delete'}]
