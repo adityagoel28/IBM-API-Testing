@@ -1,4 +1,5 @@
 import re
+import json
 
 count = 0
 final_result = []
@@ -28,11 +29,28 @@ all_endpoints = [{'GET': '/api/Book/GetCategoriesList'}, {'DELETE': '/api/Book/G
 
 all_endpoints = [{'GET': '/info.0.json'}, {'GET': '/{comicId}/info.0.json'}]
 
+all_endpoints = [{'POST': '/check'}, {'GET': '/languages'}, {'GET': '/words'}, {'POST': '/words/add'}, {'POST': '/words/delete'}]
+
 all_endpoints = [{'GET': '/v2/pet/findByStatus'}, {'GET': '/v2/pet/findByTags'}, {'POST': '/v2/store/order'}, {'GET': '/v2/store/inventory'}, {'GET': '/v2/store/order/'},
                   {'DELETE': '/v2/store/order/'}, {'POST': '/v2/user/createWithArray'}, {'POST': '/v2/user/createWithList'}, {'GET': '/v2/user/login'}, {'GET': '/v2/user/logout'}, {'POST': '/v2/pet'},
                   {'PUT': '/v2/pet'}, {'DELETE': '/v2/pet/'}, {'GET': '/v2/pet/'}, {'GET': '/v2/user/'}, {'PUT': '/v2/user/'}, {'DELETE': '/v2/user/'}, {'POST': '/v2/user'}, {'POST': '/v2/pet/'}]
 
 print('Number of endpoints: ', len(all_endpoints))
+
+with open('./demo-server-test/swagger.json', 'r') as file:
+    data = json.load(file)
+
+endpoints = list(data['paths'].keys())
+all_operations = []
+
+for i in range(len(endpoints)):
+    methods = list(data['paths'][endpoints[i]])
+    print(methods, endpoints[i])
+    for j in range(len(methods)):
+        methods[j] = methods[j].upper()
+        all_operations.append({methods[j]: endpoints[i]})
+
+print('All operations: ', all_operations)
 
 # open the text file and read its contents into a string
 with open('./output.txt','r', encoding="utf8") as file:
@@ -109,6 +127,24 @@ print('Length of total analysis is: ' + str(len(total_analysis)))
 with open("./file.txt", "w") as output:
     output.write(str(final_result))
 
+success_unique_analysis = []
+success_unique_analysis_count = 0
+
+for i in unique_analysis:
+    method = i['method']
+    endpoint = i['endpoint']
+    statusCode = i['statusCode']
+    if(statusCode[0] == '2' or statusCode[0] == '5'):
+        for j in success_unique_analysis:
+            j_method = j['method']
+            j_endpoint = j['endpoint']
+            j_statusCode = j['statusCode']
+            if(method == j_method and endpoint == j_endpoint):
+                break
+        else:
+            success_unique_analysis_count += 1
+            success_unique_analysis.append({'method': method, 'endpoint': endpoint, 'statusCode': statusCode})
+
 
 unique_responses_2xx, unique_responses_3xx, unique_responses_4xx, unique_responses_5xx = 0, 0, 0, 0
 total_responses_2xx, total_responses_3xx, total_responses_4xx, total_responses_5xx = 0, 0, 0, 0
@@ -134,6 +170,8 @@ for i in total_analysis:
         total_responses_4xx += 1
     elif(i['statusCode'][0] == '5'):
         total_responses_5xx += 1
+
+total_responses = total_responses_2xx + total_responses_3xx + total_responses_4xx + total_responses_5xx
     
 print('Number of unique 2xx responses: ' + str(unique_responses_2xx))
 print('Number of unique 3xx responses: ' + str(unique_responses_3xx))
@@ -144,3 +182,11 @@ print('Number of total 2xx responses: ' + str(total_responses_2xx))
 print('Number of total 3xx responses: ' + str(total_responses_3xx))
 print('Number of total 4xx responses: ' + str(total_responses_4xx))
 print('Number of total 5xx responses: ' + str(total_responses_5xx))
+print()
+print('Operation Coverage (Op_cov) numerator: ' + str(success_unique_analysis_count))
+print('Operation Coverage (Op_cov) denominator: ' + str(len(all_endpoints)))
+print('Operation Coverage (Op_cov): ' + str((success_unique_analysis_count/len(all_endpoints))))
+print()
+print('5xx_operation_coverage (5xx_op_cov) numerator: ' + str(total_responses_5xx))
+print('5xx_operation_coverage (5xx_op_cov) denominator: ' + str(total_responses))
+print('5xx_operation_coverage (5xx_op_cov): ' + str(total_responses_5xx/total_responses))
