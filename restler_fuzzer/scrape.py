@@ -172,7 +172,7 @@ for i in total_analysis:
         total_responses_5xx += 1
 
 total_responses = total_responses_2xx + total_responses_3xx + total_responses_4xx + total_responses_5xx
-    
+
 print('Number of unique 2xx responses: ' + str(unique_responses_2xx))
 print('Number of unique 3xx responses: ' + str(unique_responses_3xx))
 print('Number of unique 4xx responses: ' + str(unique_responses_4xx))

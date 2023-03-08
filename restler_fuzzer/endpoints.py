@@ -26,3 +26,13 @@ all_endpoints = [{'GET': '/info.0.json'}, {'GET': '/{comicId}/info.0.json'}]
 
 # language_tool
 all_endpoints = [{'POST': '/check'}, {'GET': '/languages'}, {'GET': '/words'}, {'POST': '/words/add'}, {'POST': '/words/delete'}]
+
+
+# Car API
+all_endpoints = [{'POST': '/api/auth/login'}, {'GET': '/api/bodies'}, {'GET': '/api/engines'}, {'GET': '/api/exterior-colors'}, {'GET': '/api/interior-colors'}, 
+                 {'GET': '/api/makes'}, {'GET': '/api/mileages'}, {'GET': '/api/models'}, {'GET': '/api/trims'}, {'GET': '/api/trims/{id}'}, {'GET': '/api/vehicle-attributes'}, 
+                 {'GET': '/api/vin/{vin}'}, {'GET': '/api/years'}]
+
+
+# xkcd
+all_endpoints = [{'GET': '/info.0.json'}, {'GET': '/{comicId}/info.0.json'}]
